@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,164 @@
     <meta name="description" content="موقع اشرف لمواقيت الصلاة والساعة المحلية بدون اعلانات مزعجة او اشتراكات">
     <meta name="keywords" content="led , achraf , clock time , ledclock , mawakit ">
     <link rel="canonical" href="https://achrafmeh.github.io/Clock/" />
-    <title>الساعة العالمية</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="icon" type="image/png" href="icon.png">
+    <title>الساعة العالمية ومواقيت الصلاة</title>
+    
+    <style>
+        /* تنسيق عام للموقع واحترافي */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle, #111827 0%, #030712 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f3f4f6;
+            padding: 20px;
+        }
+
+        .clock-container {
+            text-align: center;
+            background: rgba(17, 24, 39, 0.7);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* تنسيق شاشة الـ LED الرقمية */
+        #clock {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 75px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.6), 0 0 30px rgba(0, 255, 204, 0.4), 0 0 50px rgba(0, 255, 204, 0.2);
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+
+        #day {
+            font-size: 22px;
+            color: #9ca3af;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+        }
+
+        /* حاوية مواقيت الصلاة */
+        .prayer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* كروت مواقيت الصلاة المطورة */
+        .prayer-box {
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 10px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .prayer-box:hover {
+            transform: translateY(-5px);
+            background: rgba(31, 41, 55, 0.9);
+            border-color: rgba(0, 255, 204, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 255, 204, 0.1);
+        }
+
+        .prayer-box strong {
+            display: block;
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .prayer-box span {
+            color: #00ffcc;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: sans-serif;
+        }
+
+        /* توافق الشاشات الصغيرة */
+        @media (max-width: 480px) {
+            #clock {
+                font-size: 55px;
+            }
+            #day {
+                font-size: 18px;
+            }
+            .prayer-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
+
     <div class="clock-container">
         <div id="clock">00:00:00</div>
         <div id="day">Sunday</div>
+        
         <div id="prayer-times" class="prayer-container"></div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // تحديث الساعة الرقمية بشكل مستمر
+        function updateClock() {
+            let now = new Date();
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            let seconds = now.getSeconds().toString().padStart(2, '0');
+            let timeString = `${hours}:${minutes}:${seconds}`;
+            
+            let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let dayString = days[now.getDay()];
+            
+            document.getElementById("clock").textContent = timeString;
+            document.getElementById("day").textContent = dayString;
+        }
+
+        // مواقيت الصلاة في الجزائر
+        const prayerTimes = {
+            "الفجر": "05:00 AM",
+            "الظهر": "12:30 PM",
+            "العصر": "04:00 PM",
+            "المغرب": "07:00 PM",
+            "العشاء": "08:30 PM"
+        };
+
+        // عرض مواقيت الصلاة داخل الكروت المطورة
+        function displayPrayerTimes() {
+            let container = document.getElementById("prayer-times");
+            container.innerHTML = "";
+            
+            for (let prayer in prayerTimes) {
+                let prayerBox = document.createElement("div");
+                prayerBox.className = "prayer-box";
+                prayerBox.innerHTML = `<strong>${prayer}</strong><span>${prayerTimes[prayer]}</span>`;
+                container.appendChild(prayerBox);
+            }
+        }
+
+        // تشغيل الوظائف عند تحميل الصفحة
+        displayPrayerTimes();
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>
-
